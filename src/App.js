@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-expressions */
 /* eslint-disable jsx-a11y/anchor-is-valid */
 /* eslint-disable no-unused-vars */
 import React from "react";
@@ -18,13 +19,15 @@ function App() {
     "20.03.2020",
     "21.03.2020",
     "22.03.2020",
-    "23.03.2020"
+    "23.03.2020",
+    "24.03.2020"
   ];
-  const toplam = [1, 1, 5, 6, 18, 47, 98, 191, 359, 670, 947, 1236,1529];
-  const olumler = [0, 0, 0, 0, 0, 0, 1, 3, 4, 9, 21, 30,37];
-  const hasta = [1, 1, 5, 6, 18, 47, 98, 191, 355, 661, 926, 1206,1492];
-  const iyilesenler = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0,];
-  let lastUpdate = "22.03.2020 23:32";
+
+  const toplam = [1, 1, 5, 6, 18, 47, 98, 191, 359, 670, 947, 1236, 1529, 1872];
+  const olumler = [0, 0, 0, 0, 0, 0, 1, 3, 4, 9, 21, 30, 37, 44];
+  const hasta = [1, 1, 5, 6, 18, 47, 98, 191, 355, 661, 926, 1206, 1492, 1828];
+  const iyilesenler = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+  let lastUpdate = "24.03.2020 22:34";
 
   const oran = parseFloat(
     (olumler[olumler.length - 1] * 100.0) / toplam[toplam.length - 1]
@@ -33,6 +36,12 @@ function App() {
   let yuzde = oran.toString().substr(0, 4);
 
   yuzde = yuzde.replace(".", ",");
+
+  const reversedLabels = labels.map(item => item).reverse();
+  const reversedToplam = toplam.map(item => item).reverse();
+  const reversedHasta = hasta.map(item => item).reverse();
+  const reversedIyilesen = iyilesenler.map(item => item).reverse();
+  const reversedOlum = olumler.map(item => item).reverse();
 
   window.onload = function() {
     new Chart(document.getElementById("corona-chart"), {
@@ -47,6 +56,7 @@ function App() {
             fill: false,
             borderWidth: 2,
             pointBorderWidth: 5,
+            pointBorderColor: "#26c6da",
             pointHoverBackgroundColor: "26c6da"
           },
           {
@@ -57,26 +67,27 @@ function App() {
             borderWidth: 2,
             fill: false,
             pointBorderWidth: 5,
+            pointBorderColor: "orange",
             pointHoverBackgroundColor: "orange"
           },
           {
             data: olumler,
             label: `Ölen`,
-            borderColor: "red",
+            borderColor: "#ef5350",
             fill: false,
             borderWidth: 2,
             pointBorderWidth: 5,
-            pointHoverBackgroundColor: "red"
+            pointHoverBackgroundColor: "#ef5350"
+          },
+          {
+            data: iyilesenler,
+            label: `İyileşen`,
+            borderColor: "#66bb6a",
+            fill: false,
+            borderWidth: 2,
+            pointBorderWidth: 5,
+            pointHoverBackgroundColor: "#66bb6a"
           }
-          // {
-          //   data: iyilesenler,
-          //   label: `İyileşen`,
-          //   borderColor: "green",
-          //   fill: false,
-          //   borderWidth: 2,
-          //   pointBorderWidth: 5,
-          //   pointHoverBackgroundColor: "green"
-          // }
         ]
       },
       options: {
@@ -109,8 +120,11 @@ function App() {
           xAxes: [
             {
               display: true,
+              ticks: {
+                autoSkip: true
+              },
               scaleLabel: {
-                display: false,
+                display: true,
                 labelString: "Tarih"
               }
             }
@@ -146,7 +160,7 @@ function App() {
             </div>
           </div>
           <div className='col-md-6'>
-            <div className='card-counter1 primary' id="hasta">
+            <div className='card-counter1 primary' id='hasta'>
               <span className='count-numbers'>
                 {toplam[toplam.length - 1] - olumler[olumler.length - 1]}
               </span>
@@ -175,7 +189,7 @@ function App() {
             </div>
           </div>
 
-           <div className='col-md-4'>
+          <div className='col-md-4'>
             <div className='card-counter success'>
               <i className='fa fa-medkit'></i>
               <span className='count-numbers'>
@@ -183,7 +197,7 @@ function App() {
               </span>
               <span className='count-name'>İyileşen</span>
             </div>
-          </div> 
+          </div>
         </div>
       </div>
 
@@ -200,18 +214,41 @@ function App() {
       >
         <canvas id='corona-chart' />
       </div>
-      {/* <div className='display-4'>Sağlık Bakanı'ndan Son Açıklama</div>
-      <div className='display-4'>
-        <i class='fas fa-angle-down ' id='down' />
-      </div>
       <div
         className='container border border-light rounded p-3 mb-5 box-shadow'
         id='kaynak'
       >
-        <div>
-        <blockquote class="twitter-tweet"><p lang="tr" dir="ltr" data-width="1920px">BUGÜNE KADAR toplam 20.345 test yapıldı, 1.236 tanı kondu, hepsi yaşlı 30 hastamızı kaybettik. Hastalık ülkemizde yokken, “yok” dedik. Şimdi gün gün durumu açıklıyoruz. Şeffaflığımızla sizi tedbire de davet ediyoruz. Tedbirli olalım. Bu ülke, bu tehdide yenik düşmeyecek.</p>&mdash; Dr. Fahrettin Koca (@drfahrettinkoca) <a href="https://twitter.com/drfahrettinkoca/status/1241806899215061009?ref_src=twsrc%5Etfw">March 22, 2020</a></blockquote>
-        </div>
-    </div> */}
+        <table class='table table-hover'>
+          <thead class='thead-light'>
+            <tr>
+              <th scope='col'>Tarih</th>
+              <th scope='col'>Toplam</th>
+              <th scope='col'>Hastalar</th>
+              <th scope='col'>Ölümler</th>
+              <th scope='col'>İyileşenler</th>
+              <th scope='col'>Ölüm Oranı</th>
+            </tr>
+          </thead>
+          <tbody>
+            {reversedLabels.map((item, index) => {
+              let oran = parseFloat(
+                (reversedOlum[index] * 100) / reversedToplam[index]
+              );
+              let yuzde = oran.toString().substr(0, 4);
+              return (
+                <tr className={index === 0 ? "table-primary" : null}>
+                  <th>{item}</th>
+                  <td>{reversedToplam[index]}</td>
+                  <td>{reversedToplam[index] - reversedOlum[index]}</td>
+                  <td>{reversedOlum[index]}</td>
+                  <td>{reversedIyilesen[index]}</td>
+                  <td>{reversedOlum[index] === 0 ? "0" : "%" + yuzde}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
