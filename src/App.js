@@ -67,7 +67,6 @@ function App() {
 
   const reversedLabels = labels.map(item => item).reverse();
   const reversedToplam = toplam.map(item => item).reverse();
-  const reversedHasta = hasta.map(item => item).reverse();
   const reversedIyilesen = iyilesenler.map(item => item).reverse();
   const reversedOlum = olumler.map(item => item).reverse();
 
@@ -175,13 +174,11 @@ function App() {
 
   return (
     <div className='App'>
-      <div className="container">
-        
-      </div>
-      <div className="container">
-      <div className='row justify-content-center display-3 mt-2'>
-        <div className='col-md-auto mb-3'>Türkiye'de COVID-19</div>
-      </div>
+      <div className='container'></div>
+      <div className='container'>
+        <div className='row justify-content-center display-3 mt-2'>
+          <div className='col-md-auto mb-3'>Türkiye'de COVID-19</div>
+        </div>
       </div>
       <div className='container border border-light rounded pt-3 mb-3 mt-3 box-shadow'>
         <div className='row mb-3'>
@@ -233,23 +230,70 @@ function App() {
           </div>
         </div>
       </div>
-      <div className='container box-shadow border border-light rounded p-3 mb-3' id='chart' style={{
+      <div
+        className='container box-shadow border border-light rounded p-3 mb-3'
+        id='chart'
+        style={{
           height: "55vh",
           width: "100%"
-        }}>
+        }}
+      >
         <canvas id='corona-chart' />
       </div>
-      <div className='container border border-light rounded p-3 mb-5 box-shadow' id='kaynak'>
+      <div
+        className='container border border-light rounded p-3 mb-5 box-shadow'
+        id='kaynak'
+      >
         <div className='table-responsive'>
-          <table className='table table-hover'>
+          <table
+            className='table table-hover'
+            data-toggle='table'
+            sortable='true'
+          >
             <thead>
               <tr>
-                <th scope='col'>Tarih</th>
-                <th scope='col'>Vaka</th>
-                <th scope='col'>Hasta</th>
-                <th scope='col'>Ölüm</th>
-                <th scope='col'>İyileşen</th>
-                <th scope='col'>Ölüm Oranı</th>
+                <th
+                  scope='col'
+                  data-sortable='true'
+                  data-footer-formatter='tarihToplam'
+                >
+                  Tarih
+                </th>
+                <th
+                  scope='col'
+                  data-sortable='true'
+                  data-footer-formatter='vakaToplam'
+                >
+                  Toplam Vaka
+                </th>
+                <th scope='col' data-footer-formatter=''>
+                  Yeni Vaka
+                </th>
+                <th
+                  scope='col'
+                  data-footer-formatter='olumToplam'
+                  data-sortable='true'
+                >
+                  Ölüm
+                </th>
+                <th scope='col' data-footer-formatter=''>
+                  Yeni Ölüm
+                </th>
+                <th
+                  scope='col'
+                  data-footer-formatter='iyilesenToplam'
+                  data-sortable='true'
+                >
+                  İyileşen
+                </th>
+                <th scope='col'>Yeni İyileşen</th>
+                <th
+                  scope='col'
+                  data-footer-formatter='oranToplam'
+                  data-sortable='true'
+                >
+                  Ölüm Oranı
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -259,71 +303,55 @@ function App() {
                 );
                 let yuzde = oran.toString().substr(0, 4);
                 return (
-                  <tr key={Math.random()}>
+                  <tr
+                    key={Math.random()}
+                    className={index === 0 ? "table-primary" : null}
+                  >
                     <td>{item}</td>
+                    <td>{reversedToplam[index]}</td>
                     <td>
-                      {reversedToplam[index]}
                       <b>
                         {index !== reversedLabels.length - 1
-                          ? "(+" +
-                            (reversedToplam[index] -
-                              reversedToplam[index + 1]) +
-                            ")"
-                          : ""}
-                      </b>
-                    </td>
-                    <td>
-                      {reversedHasta[index]}
-                      <b>
-                        {reversedHasta[index] !== 0 &&
-                        index !== reversedLabels.length - 1
-                          ? "(+" +
-                            (reversedHasta[index] - reversedHasta[index + 1]) +
-                            ")"
-                          : ""}
+                          ? "+" +
+                            (reversedToplam[index] - reversedToplam[index + 1])
+                          : "-"}
                       </b>
                     </td>
                     <td>
                       {reversedOlum[index] !== 0 &&
                       index !== reversedLabels.length - 1
                         ? reversedOlum[index]
-                        : "-"}
+                        : "0"}
+                    </td>
+                    <td>
                       <b style={{ color: "red" }}>
                         {reversedOlum[index] !== 0 &&
                         index !== reversedLabels.length - 1
-                          ? "(+" +
-                            (reversedOlum[index] - reversedOlum[index + 1]) +
-                            ")"
-                          : ""}
+                          ? "+" +
+                            (reversedOlum[index] - reversedOlum[index + 1])
+                          : "-"}
                       </b>
                     </td>
                     <td>
                       {reversedIyilesen[index] !== 0 &&
                       index !== reversedLabels.length - 1
                         ? reversedIyilesen[index]
-                        : "-"}
+                        : "0"}
+                    </td>
+                    <td>
                       <b style={{ color: "green" }}>
                         {reversedIyilesen[index] !== 0 &&
                         index !== reversedLabels.length - 1
-                          ? "(+" +
+                          ? "+" +
                             (reversedIyilesen[index] -
-                              reversedIyilesen[index + 1]) +
-                            ")"
-                          : ""}
+                              reversedIyilesen[index + 1])
+                          : "?"}
                       </b>
                     </td>
-                    <td>{reversedOlum[index] === 0 ? "-" : "%" + yuzde}</td>
+                    <td>{reversedOlum[index] === 0 ? "%0" : "%" + yuzde}</td>
                   </tr>
                 );
               })}
-              <tr className='table-info'>
-                <th>{labels.length - 1} Günlük Toplam</th>
-                <th>{toplam[toplam.length - 1]}</th>
-                <th>{hasta[hasta.length - 1]}</th>
-                <th>{olumler[olumler.length - 1]}</th>
-                <th>{iyilesenler[iyilesenler.length - 1]}</th>
-                <th>%{yuzde}</th>
-              </tr>
             </tbody>
           </table>
         </div>
