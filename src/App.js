@@ -179,11 +179,11 @@ function App() {
         
       </div>
       <div className="container">
-      <div className='row justify-content-center display-4 mt-3'>
-        <div className='col-md-auto mb-3'>Türkiye'de COVID-19 </div>
+      <div className='row justify-content-center display-3 mt-2'>
+        <div className='col-md-auto mb-3'>Türkiye'de COVID-19</div>
       </div>
       </div>
-      <div className='container border border-light rounded p-3 mb-3 mt-3 box-shadow'>
+      <div className='container border border-light rounded pt-3 mb-3 mt-3 box-shadow'>
         <div className='row mb-3'>
           <div className='col-md-6'>
             <div className='card-counter info'>
@@ -233,13 +233,13 @@ function App() {
           </div>
         </div>
       </div>
-      <div className='container box-shadow border border-light rounded p-3' id='chart' style={{
+      <div className='container box-shadow border border-light rounded p-3 mb-3' id='chart' style={{
           height: "55vh",
           width: "100%"
         }}>
         <canvas id='corona-chart' />
       </div>
-      <div className='container border border-light rounded p-3 mb-5 mt-3 box-shadow' id='kaynak'>
+      <div className='container border border-light rounded p-3 mb-5 box-shadow' id='kaynak'>
         <div className='table-responsive'>
           <table className='table table-hover'>
             <thead>

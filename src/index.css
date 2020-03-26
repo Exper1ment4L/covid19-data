@@ -239,8 +239,8 @@ code {
   .card-counter .count-numbers {
     position: absolute;
     right: 30px;
-    top: 20px;
-    font-size: 26px;
+    top: 10px;
+    font-size: 32px;
     display: block;
   }
 
