@@ -1,9 +1,5 @@
-/* eslint-disable no-unused-expressions */
-/* eslint-disable jsx-a11y/anchor-is-valid */
-/* eslint-disable no-unused-vars */
 import React from "react";
 import Chart from "chart.js";
-import "./App.css";
 
 function App() {
   const labels = [
@@ -20,21 +16,53 @@ function App() {
     "21.03.2020",
     "22.03.2020",
     "23.03.2020",
-    "24.03.2020"
+    "24.03.2020",
+    "25.03.2020"
   ];
 
-  const toplam = [1, 1, 5, 6, 18, 47, 98, 191, 359, 670, 947, 1236, 1529, 1872];
-  const olumler = [0, 0, 0, 0, 0, 0, 1, 3, 4, 9, 21, 30, 37, 44];
-  const hasta = [1, 1, 5, 6, 18, 47, 98, 191, 355, 661, 926, 1206, 1492, 1828];
-  const iyilesenler = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-  let lastUpdate = "24.03.2020 22:34";
+  const toplam = [
+    1,
+    1,
+    5,
+    6,
+    18,
+    47,
+    98,
+    191,
+    359,
+    670,
+    947,
+    1236,
+    1529,
+    1872,
+    2433
+  ];
+  const olumler = [0, 0, 0, 0, 0, 0, 1, 3, 4, 9, 21, 30, 37, 44, 59];
+  const hasta = [
+    1,
+    1,
+    5,
+    6,
+    18,
+    47,
+    98,
+    191,
+    355,
+    661,
+    926,
+    1206,
+    1492,
+    1828,
+    2374
+  ];
+  const iyilesenler = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 26];
+  let lastUpdate = "25.03.2020 23:54";
 
   const oran = parseFloat(
     (olumler[olumler.length - 1] * 100.0) / toplam[toplam.length - 1]
   );
 
   let yuzde = oran.toString().substr(0, 4);
-
   yuzde = yuzde.replace(".", ",");
 
   const reversedLabels = labels.map(item => item).reverse();
@@ -103,7 +131,7 @@ function App() {
         },
         layout: {
           padding: {
-            bottom: 10
+            bottom: 0
           }
         },
         legend: {
@@ -124,7 +152,7 @@ function App() {
                 autoSkip: true
               },
               scaleLabel: {
-                display: true,
+                display: false,
                 labelString: "Tarih"
               }
             }
@@ -147,10 +175,15 @@ function App() {
 
   return (
     <div className='App'>
-      <div className='container'>
-        <div className='row justify-content-center display-4 mt-3'>
-          <div className='col-md-auto mb-3'>Türkiye'deki COVID-19 Verileri</div>
-        </div>
+      <div className="container">
+        
+      </div>
+      <div className="container">
+      <div className='row justify-content-center display-4 mt-3'>
+        <div className='col-md-auto mb-3'>Türkiye'de COVID-19 </div>
+      </div>
+      </div>
+      <div className='container border border-light rounded p-3 mb-3 mt-3 box-shadow'>
         <div className='row mb-3'>
           <div className='col-md-6'>
             <div className='card-counter info'>
@@ -200,54 +233,100 @@ function App() {
           </div>
         </div>
       </div>
-
-      <div
-        className='container'
-        id='chart'
-        style={{
+      <div className='container box-shadow border border-light rounded p-3' id='chart' style={{
           height: "55vh",
-          width: "100%",
-          margin: "0 auto",
-          color: "#666666",
-          marginBottom: 0
-        }}
-      >
+          width: "100%"
+        }}>
         <canvas id='corona-chart' />
       </div>
-      <div
-        className='container border border-light rounded p-3 mb-5 box-shadow'
-        id='kaynak'
-      >
-        <table class='table table-hover'>
-          <thead class='thead-light'>
-            <tr>
-              <th scope='col'>Tarih</th>
-              <th scope='col'>Toplam</th>
-              <th scope='col'>Hastalar</th>
-              <th scope='col'>Ölümler</th>
-              <th scope='col'>İyileşenler</th>
-              <th scope='col'>Ölüm Oranı</th>
-            </tr>
-          </thead>
-          <tbody>
-            {reversedLabels.map((item, index) => {
-              let oran = parseFloat(
-                (reversedOlum[index] * 100) / reversedToplam[index]
-              );
-              let yuzde = oran.toString().substr(0, 4);
-              return (
-                <tr className={index === 0 ? "table-primary" : null}>
-                  <th>{item}</th>
-                  <td>{reversedToplam[index]}</td>
-                  <td>{reversedToplam[index] - reversedOlum[index]}</td>
-                  <td>{reversedOlum[index]}</td>
-                  <td>{reversedIyilesen[index]}</td>
-                  <td>{reversedOlum[index] === 0 ? "0" : "%" + yuzde}</td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+      <div className='container border border-light rounded p-3 mb-5 mt-3 box-shadow' id='kaynak'>
+        <div className='table-responsive'>
+          <table className='table table-hover'>
+            <thead>
+              <tr>
+                <th scope='col'>Tarih</th>
+                <th scope='col'>Vaka</th>
+                <th scope='col'>Hasta</th>
+                <th scope='col'>Ölüm</th>
+                <th scope='col'>İyileşen</th>
+                <th scope='col'>Ölüm Oranı</th>
+              </tr>
+            </thead>
+            <tbody>
+              {reversedLabels.map((item, index) => {
+                let oran = parseFloat(
+                  (reversedOlum[index] * 100) / reversedToplam[index]
+                );
+                let yuzde = oran.toString().substr(0, 4);
+                return (
+                  <tr key={Math.random()}>
+                    <td>{item}</td>
+                    <td>
+                      {reversedToplam[index]}
+                      <b>
+                        {index !== reversedLabels.length - 1
+                          ? "(+" +
+                            (reversedToplam[index] -
+                              reversedToplam[index + 1]) +
+                            ")"
+                          : ""}
+                      </b>
+                    </td>
+                    <td>
+                      {reversedHasta[index]}
+                      <b>
+                        {reversedHasta[index] !== 0 &&
+                        index !== reversedLabels.length - 1
+                          ? "(+" +
+                            (reversedHasta[index] - reversedHasta[index + 1]) +
+                            ")"
+                          : ""}
+                      </b>
+                    </td>
+                    <td>
+                      {reversedOlum[index] !== 0 &&
+                      index !== reversedLabels.length - 1
+                        ? reversedOlum[index]
+                        : "-"}
+                      <b style={{ color: "red" }}>
+                        {reversedOlum[index] !== 0 &&
+                        index !== reversedLabels.length - 1
+                          ? "(+" +
+                            (reversedOlum[index] - reversedOlum[index + 1]) +
+                            ")"
+                          : ""}
+                      </b>
+                    </td>
+                    <td>
+                      {reversedIyilesen[index] !== 0 &&
+                      index !== reversedLabels.length - 1
+                        ? reversedIyilesen[index]
+                        : "-"}
+                      <b style={{ color: "green" }}>
+                        {reversedIyilesen[index] !== 0 &&
+                        index !== reversedLabels.length - 1
+                          ? "(+" +
+                            (reversedIyilesen[index] -
+                              reversedIyilesen[index + 1]) +
+                            ")"
+                          : ""}
+                      </b>
+                    </td>
+                    <td>{reversedOlum[index] === 0 ? "-" : "%" + yuzde}</td>
+                  </tr>
+                );
+              })}
+              <tr className='table-info'>
+                <th>{labels.length - 1} Günlük Toplam</th>
+                <th>{toplam[toplam.length - 1]}</th>
+                <th>{hasta[hasta.length - 1]}</th>
+                <th>{olumler[olumler.length - 1]}</th>
+                <th>{iyilesenler[iyilesenler.length - 1]}</th>
+                <th>%{yuzde}</th>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
