@@ -1,215 +1,224 @@
-import React from "react";
-import Chart from "chart.js";
+import React, { useEffect, useState } from "react";
+import { Chart } from "react-google-charts";
 
 function App() {
-  const labels = [
-    "11.03.2020",
-    "12.03.2020",
-    "13.03.2020",
-    "14.03.2020",
-    "15.03.2020",
-    "16.03.2020",
-    "17.03.2020",
-    "18.03.2020",
-    "19.03.2020",
-    "20.03.2020",
-    "21.03.2020",
-    "22.03.2020",
-    "23.03.2020",
-    "24.03.2020",
-    "25.03.2020"
+  const [datas, setDatas] = useState([]);
+  const [history, setHistory] = useState();
+
+  // Güncel Veriler
+  useEffect(() => {
+    fetch("https://corona.lmao.ninja/countries/turkey")
+      .then(res => res.json())
+      .then(data => {
+        setDatas(data);
+      });
+  }, []);
+
+  // Geçmiş Veriler
+  useEffect(() => {
+    fetch("https://corona.lmao.ninja/v2/historical/turkey")
+      .then(res => res.json())
+      .then((data, index) => {
+        setHistory(data.timeline);
+      });
+  }, []);
+
+  const tableData = [
+    [
+      "Tarih",
+      "Toplam Vaka",
+      "Yeni Vaka",
+      "Toplam Ölüm",
+      "Bugünkü Ölüm",
+      "Toplam İyileşen",
+      "Bugünkü İyileşen",
+      "Ölüm Oranı"
+    ]
   ];
 
-  const toplam = [
-    1,
-    1,
-    5,
-    6,
-    18,
-    47,
-    98,
-    191,
-    359,
-    670,
-    947,
-    1236,
-    1529,
-    1872,
-    2433
-  ];
-  const olumler = [0, 0, 0, 0, 0, 0, 1, 3, 4, 9, 21, 30, 37, 44, 59];
-  const hasta = [
-    1,
-    1,
-    5,
-    6,
-    18,
-    47,
-    98,
-    191,
-    355,
-    661,
-    926,
-    1206,
-    1492,
-    1828,
-    2374
-  ];
-  const iyilesenler = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 26];
-  let lastUpdate = "25.03.2020 23:54";
+  const chartData = [["Tarih", "Toplam"]];
 
-  const oran = parseFloat(
-    (olumler[olumler.length - 1] * 100.0) / toplam[toplam.length - 1]
-  );
+  const setTarihFormat = tarih => {
+    let formatted;
+    let month;
+    switch (tarih.substr(0, 1)) {
+      case "1":
+        month = "Ocak";
+        break;
+      case "2":
+        month = "Şubat";
+        break;
+      case "3":
+        month = "Mart";
+        break;
+      case "4":
+        month = "Nisan";
+        break;
+      case "5":
+        month = "Mayıs";
+        break;
+      case "6":
+        month = "Haziran";
+        break;
+      case "7":
+        month = "Temmuz";
+        break;
+      case "8":
+        month = "Ağustos";
+        break;
+      case "9":
+        month = "Eylül";
+        break;
+      case "10":
+        month = "Ekim";
+        break;
+      case "11":
+        month = "Kasım";
+        break;
+      case "12":
+        month = "Aralık";
+        break;
 
+      default:
+        break;
+    }
+
+    if (tarih.length === 7) {
+      formatted = tarih.substr(2, 2) + " " + month + " 2020";
+    } else {
+      formatted = tarih.substr(2, 1) + " " + month + " 2020";
+    }
+    return formatted;
+  };
+
+  if (history !== undefined) {
+    const tarih = Object.keys(history.cases)
+      .map(item => setTarihFormat(item))
+      .reverse();
+    const toplam = Object.values(history.cases)
+      .map(item => item)
+      .reverse();
+    const olum = Object.values(history.deaths)
+      .map(item => item)
+      .reverse();
+    const iyilesen = Object.values(history.recovered)
+      .map(item => item)
+      .reverse();
+
+    for (let index = 0; index < 19; index++) {
+      let vakaArtis = toplam[index] - toplam[index + 1];
+      let olumArtis = olum[index] - olum[index + 1];
+      let iyiArtis = iyilesen[index] - iyilesen[index + 1];
+
+      let oran = parseFloat((olum[index] * 100) / toplam[index]);
+      let yuzde = oran.toString().substr(0, 4);
+      yuzde = yuzde.replace(".", ",");
+
+      tableData.push([
+        { v: index, f: tarih[index] },
+        toplam[index],
+        !isNaN(vakaArtis) && vakaArtis !== 0
+          ? { v: vakaArtis, f: "+" + vakaArtis }
+          : 0,
+        olum[index],
+        !isNaN(olumArtis) && olumArtis !== 0
+          ? { v: olumArtis, f: "+" + olumArtis }
+          : 0,
+        iyilesen[index],
+        !isNaN(iyiArtis) && iyiArtis !== 0
+          ? { v: iyiArtis, f: "+" + iyiArtis }
+          : 0,
+        { v: yuzde, f: "%" + yuzde }
+      ]);
+
+      chartData.push([tarih[18 - index].substr(0, 6), toplam[18 - index]]);
+    }
+  }
+
+  const yogunBakim = datas.critical;
+  const hasta = datas.active;
+
+  let updated = new Date(datas.updated);
+  let lastUpdate = updated.toLocaleString();
+
+  const oran = parseFloat((datas.deaths * 100.0) / datas.cases);
   let yuzde = oran.toString().substr(0, 4);
   yuzde = yuzde.replace(".", ",");
 
-  const reversedLabels = labels.map(item => item).reverse();
-  const reversedToplam = toplam.map(item => item).reverse();
-  const reversedIyilesen = iyilesenler.map(item => item).reverse();
-  const reversedOlum = olumler.map(item => item).reverse();
-
-  window.onload = function() {
-    new Chart(document.getElementById("corona-chart"), {
-      type: "line",
-      data: {
-        labels: labels,
-        datasets: [
-          {
-            data: toplam,
-            label: `Toplam`,
-            borderColor: "#26c6da",
-            fill: false,
-            borderWidth: 2,
-            pointBorderWidth: 5,
-            pointBorderColor: "#26c6da",
-            pointHoverBackgroundColor: "26c6da"
-          },
-          {
-            hitRadius: false,
-            data: hasta,
-            label: `Hasta`,
-            borderColor: "orange",
-            borderWidth: 2,
-            fill: false,
-            pointBorderWidth: 5,
-            pointBorderColor: "orange",
-            pointHoverBackgroundColor: "orange"
-          },
-          {
-            data: olumler,
-            label: `Ölen`,
-            borderColor: "#ef5350",
-            fill: false,
-            borderWidth: 2,
-            pointBorderWidth: 5,
-            pointHoverBackgroundColor: "#ef5350"
-          },
-          {
-            data: iyilesenler,
-            label: `İyileşen`,
-            borderColor: "#66bb6a",
-            fill: false,
-            borderWidth: 2,
-            pointBorderWidth: 5,
-            pointHoverBackgroundColor: "#66bb6a"
-          }
-        ]
+  const options = {
+    legend: "none",
+    chartArea: {
+      left: 100,
+      top: 30,
+      bottom: 50,
+      right: 30,
+      width: "100%",
+      height: "100%"
+    },
+    smoothLine: true,
+    lineSize: 4,
+    pointsVisible: true,
+    vAxis: {
+      title: "Vaka Sayısı",
+      viewWindowMode: "explicit",
+      viewWindow: {
+        min: 0
       },
-      options: {
-        animation: {
-          duration: 1250,
-          easing: "linear"
-        },
-        title: {
-          display: true,
-          fontSize: 20,
-          fontStyle: "bold",
-          text: [`Son Güncelleme: ${lastUpdate}`]
-        },
-        layout: {
-          padding: {
-            bottom: 0
-          }
-        },
-        legend: {
-          align: "center",
-          onClick: e => e.stopPropagation()
-        },
-        tooltips: {
-          mode: "point",
-          cornerRadius: 0,
-          titleAlign: "center",
-          footerAlign: "center"
-        },
-        scales: {
-          xAxes: [
-            {
-              display: true,
-              ticks: {
-                autoSkip: true
-              },
-              scaleLabel: {
-                display: false,
-                labelString: "Tarih"
-              }
-            }
-          ],
-          yAxes: [
-            {
-              display: true,
-              scaleLabel: {
-                display: true,
-                labelString: "Kişi Sayısı"
-              }
-            }
-          ]
-        },
-        responsive: true,
-        maintainAspectRatio: false
+      gridlines: {
+        count: 5
       }
-    });
+    }
   };
 
   return (
     <div className='App'>
-      <div className='container'></div>
       <div className='container'>
         <div className='row justify-content-center display-3 mt-2'>
-          <div className='col-md-auto mb-3'>Türkiye'de COVID-19</div>
+          <div className='col-md-auto mb-3'>COVID-19 Türkiye Verileri</div>
+        </div>
+        <div className='row justify-content-center h5 mt-2'>
+          <div className='col-md-auto mb-3'>
+            Son Güncelleme:{" "}
+            {lastUpdate !== "Invalid Date" ? lastUpdate : (lastUpdate = "")}
+          </div>
         </div>
       </div>
-      <div className='container border border-light rounded pt-3 mb-3 mt-3 box-shadow'>
+      <div className='container border border-light rounded pt-3 mb-5 mt-3 box-shadow'>
         <div className='row mb-3'>
-          <div className='col-md-6'>
-            <div className='card-counter info'>
-              <span className='count-numbers'>{toplam[toplam.length - 1]}</span>
+          <div className='col-sm-12 col-md-6 col-xl-6'>
+            <div className='card-counter bugun'>
+              <span className='count-numbers'>{datas.todayCases}</span>
               <i className='fas fa-user'></i>
-              <span className='count-name'>Toplam</span>
+              <span className='count-name'>Bugünkü Vaka</span>
             </div>
           </div>
-          <div className='col-md-6'>
-            <div className='card-counter1 primary' id='hasta'>
-              <span className='count-numbers'>
-                {toplam[toplam.length - 1] - olumler[olumler.length - 1]}
-              </span>
+          <div className='col-sm-12 col-md-6 col-xl-6'>
+            <div className='card-counter bugun'>
+              <span className='count-numbers'>{datas.todayDeaths}</span>
+              <i className='fas fa-heart-broken'></i>
+              <span className='count-name'>Bugünkü Ölüm</span>
+            </div>
+          </div>
+        </div>
+
+        <hr />
+        <div className='row mb-3'>
+          <div className='col-sm-12 col-md-6 col-xl-4'>
+            <div className='card-counter info'>
+              <span className='count-numbers'>{datas.cases}</span>
+              <i className='fas fa-user'></i>
+              <span className='count-name'>Toplam Vaka</span>
+            </div>
+          </div>
+          <div className='col-sm-12 col-md-6 col-xl-4'>
+            <div className='card-counter primary' id='hasta'>
+              <span className='count-numbers'>{hasta}</span>
               <i className='fa fa-procedures'></i>
-              <span className='count-name'>Hasta</span>
+              <span className='count-name'>Şuanki Hasta</span>
             </div>
           </div>
 
-          <div className='col-md-4'>
-            <div className='card-counter danger'>
-              <span className='count-numbers'>
-                {olumler[olumler.length - 1]}
-              </span>
-              <i className='fas fa-skull'></i>
-              <span className='count-name'>Ölüm</span>
-            </div>
-          </div>
-
-          <div className='col-md-4'>
+          <div className='col-sm-12 col-md-6 col-xl-4'>
             <div className='card-counter percent'>
               <span className='count-numbers'>{yuzde}</span>
               <i className='fas fa-percent'></i>
@@ -219,143 +228,76 @@ function App() {
             </div>
           </div>
 
-          <div className='col-md-4'>
+          <div className='col-sm-12 col-md-6 col-xl-4 '>
+            <div className='card-counter yogun'>
+              <span className='count-numbers'>{yogunBakim}</span>
+              <i className='fas fa-heartbeat'></i>
+              <span className='count-name'>Yoğun Bakım</span>
+            </div>
+          </div>
+          <div className='col-sm-12 col-md-6 col-xl-4'>
             <div className='card-counter success'>
               <i className='fa fa-medkit'></i>
-              <span className='count-numbers'>
-                {iyilesenler[iyilesenler.length - 1]}
-              </span>
-              <span className='count-name'>İyileşen</span>
+              <span className='count-numbers'>{datas.recovered}</span>
+              <span className='count-name'>İyileşenler</span>
+            </div>
+          </div>
+
+          <div className='col-sm-12 col-md-6 col-xl-4'>
+            <div className='card-counter danger'>
+              <span className='count-numbers'>{datas.deaths}</span>
+              <i className='fas fa-heart-broken'></i>
+              <span className='count-name'>Ölüm</span>
             </div>
           </div>
         </div>
       </div>
-      <div
-        className='container box-shadow border border-light rounded p-3 mb-3'
-        id='chart'
-        style={{
-          height: "55vh",
-          width: "100%"
-        }}
-      >
-        <canvas id='corona-chart' />
-      </div>
-      <div
-        className='container border border-light rounded p-3 mb-5 box-shadow'
-        id='kaynak'
-      >
-        <div className='table-responsive'>
-          <table
-            className='table table-hover'
-            data-toggle='table'
-            sortable='true'
-          >
-            <thead>
-              <tr>
-                <th
-                  scope='col'
-                  data-sortable='true'
-                  data-footer-formatter='tarihToplam'
-                >
-                  Tarih
-                </th>
-                <th
-                  scope='col'
-                  data-sortable='true'
-                  data-footer-formatter='vakaToplam'
-                >
-                  Toplam Vaka
-                </th>
-                <th scope='col' data-footer-formatter=''>
-                  Yeni Vaka
-                </th>
-                <th
-                  scope='col'
-                  data-footer-formatter='olumToplam'
-                  data-sortable='true'
-                >
-                  Ölüm
-                </th>
-                <th scope='col' data-footer-formatter=''>
-                  Yeni Ölüm
-                </th>
-                <th
-                  scope='col'
-                  data-footer-formatter='iyilesenToplam'
-                  data-sortable='true'
-                >
-                  İyileşen
-                </th>
-                <th scope='col'>Yeni İyileşen</th>
-                <th
-                  scope='col'
-                  data-footer-formatter='oranToplam'
-                  data-sortable='true'
-                >
-                  Ölüm Oranı
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {reversedLabels.map((item, index) => {
-                let oran = parseFloat(
-                  (reversedOlum[index] * 100) / reversedToplam[index]
-                );
-                let yuzde = oran.toString().substr(0, 4);
-                return (
-                  <tr
-                    key={Math.random()}
-                    className={index === 0 ? "table-primary" : null}
-                  >
-                    <td>{item}</td>
-                    <td>{reversedToplam[index]}</td>
-                    <td>
-                      <b>
-                        {index !== reversedLabels.length - 1
-                          ? "+" +
-                            (reversedToplam[index] - reversedToplam[index + 1])
-                          : "-"}
-                      </b>
-                    </td>
-                    <td>
-                      {reversedOlum[index] !== 0 &&
-                      index !== reversedLabels.length - 1
-                        ? reversedOlum[index]
-                        : "0"}
-                    </td>
-                    <td>
-                      <b style={{ color: "red" }}>
-                        {reversedOlum[index] !== 0 &&
-                        index !== reversedLabels.length - 1
-                          ? "+" +
-                            (reversedOlum[index] - reversedOlum[index + 1])
-                          : "-"}
-                      </b>
-                    </td>
-                    <td>
-                      {reversedIyilesen[index] !== 0 &&
-                      index !== reversedLabels.length - 1
-                        ? reversedIyilesen[index]
-                        : "0"}
-                    </td>
-                    <td>
-                      <b style={{ color: "green" }}>
-                        {reversedIyilesen[index] !== 0 &&
-                        index !== reversedLabels.length - 1
-                          ? "+" +
-                            (reversedIyilesen[index] -
-                              reversedIyilesen[index + 1])
-                          : "?"}
-                      </b>
-                    </td>
-                    <td>{reversedOlum[index] === 0 ? "%0" : "%" + yuzde}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+      <div className='container'>
+        <div className='row justify-content-center display-4 mt-2'>
+          <div className='col-md-auto mb-3'>Vaka Artış Grafiği</div>
         </div>
       </div>
+
+      <div
+        className='container box-shadow border border-light rounded p-3 mb-5'
+        id='chart'
+        style={{
+          height: "500px"
+        }}
+      >
+        <Chart
+          chartType='LineChart'
+          data={chartData}
+          options={options}
+          width='100%'
+          height='100%'
+        />
+      </div>
+      <div className='container'>
+        <div className='row justify-content-center display-4 mt-2'>
+          <div className='col-md-auto mb-3'>Günlük Veri Tablosu</div>
+        </div>
+      </div>
+
+      <div className='container border border-light rounded p-3 mb-5 box-shadow'>
+        <Chart
+          chartType='Table'
+          data={tableData}
+          options={{
+            width: "100%"
+          }}
+        />
+      </div>
+      <div id='scroll'>
+        <span></span>
+      </div>
+      <a
+        href='https://github.com/Exper1ment4L/covid19-data'
+        target='_blank'
+        rel='noopener noreferrer'
+      >
+        <i className='fab fa-github mb-3' />
+      </a>
     </div>
   );
 }
