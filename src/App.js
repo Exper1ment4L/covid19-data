@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Chart } from "react-google-charts";
+import { Ellipsis, Default } from "react-awesome-spinners";
 
 function App() {
   const [datas, setDatas] = useState([]);
   const [history, setHistory] = useState();
+  const [loading, setLoading] = useState(true);
 
   // Güncel Veriler
   useEffect(() => {
@@ -11,6 +13,8 @@ function App() {
       .then(res => res.json())
       .then(data => {
         setDatas(data);
+
+        setLoading(false);
       });
   }, []);
 
@@ -178,8 +182,7 @@ function App() {
         </div>
         <div className='row justify-content-center h5 mt-2'>
           <div className='col-md-auto mb-3'>
-            Son Güncelleme:{" "}
-            {lastUpdate !== "Invalid Date" ? lastUpdate : (lastUpdate = "")}
+            {!loading ? "Son Güncelleme: " + lastUpdate : <Ellipsis />}
           </div>
         </div>
       </div>
@@ -187,14 +190,18 @@ function App() {
         <div className='row mb-3'>
           <div className='col-sm-12 col-md-6 col-xl-6'>
             <div className='card-counter bugun'>
-              <span className='count-numbers'>{datas.todayCases}</span>
+              <span className='count-numbers'>
+                {!loading ? datas.todayCases : <Ellipsis color='white' />}
+              </span>
               <i className='fas fa-user'></i>
               <span className='count-name'>Bugünkü Vaka</span>
             </div>
           </div>
           <div className='col-sm-12 col-md-6 col-xl-6'>
             <div className='card-counter bugun'>
-              <span className='count-numbers'>{datas.todayDeaths}</span>
+              <span className='count-numbers'>
+                {!loading ? datas.todayDeaths : <Ellipsis color='white' />}
+              </span>
               <i className='fas fa-heart-broken'></i>
               <span className='count-name'>Bugünkü Ölüm</span>
             </div>
@@ -205,14 +212,18 @@ function App() {
         <div className='row mb-3'>
           <div className='col-sm-12 col-md-6 col-xl-4'>
             <div className='card-counter info'>
-              <span className='count-numbers'>{datas.cases}</span>
+              <span className='count-numbers'>
+                {!loading ? datas.cases : <Ellipsis color='white' />}
+              </span>
               <i className='fas fa-user'></i>
               <span className='count-name'>Toplam Vaka</span>
             </div>
           </div>
           <div className='col-sm-12 col-md-6 col-xl-4'>
             <div className='card-counter primary' id='hasta'>
-              <span className='count-numbers'>{hasta}</span>
+              <span className='count-numbers'>
+                {!loading ? hasta : <Ellipsis color='white' />}
+              </span>
               <i className='fa fa-procedures'></i>
               <span className='count-name'>Şuanki Hasta</span>
             </div>
@@ -220,7 +231,9 @@ function App() {
 
           <div className='col-sm-12 col-md-6 col-xl-4'>
             <div className='card-counter percent'>
-              <span className='count-numbers'>{yuzde}</span>
+              <span className='count-numbers'>
+                {!loading ? yuzde : <Ellipsis color='white' />}
+              </span>
               <i className='fas fa-percent'></i>
               <span className='count-name' id='oranSpan'>
                 Ölüm Oranı
@@ -230,7 +243,9 @@ function App() {
 
           <div className='col-sm-12 col-md-6 col-xl-4 '>
             <div className='card-counter yogun'>
-              <span className='count-numbers'>{yogunBakim}</span>
+              <span className='count-numbers'>
+                {!loading ? yogunBakim : <Ellipsis color='white' />}
+              </span>
               <i className='fas fa-heartbeat'></i>
               <span className='count-name'>Yoğun Bakım</span>
             </div>
@@ -238,14 +253,18 @@ function App() {
           <div className='col-sm-12 col-md-6 col-xl-4'>
             <div className='card-counter success'>
               <i className='fa fa-medkit'></i>
-              <span className='count-numbers'>{datas.recovered}</span>
+              <span className='count-numbers'>
+                {!loading ? datas.recovered : <Ellipsis color='white' />}
+              </span>
               <span className='count-name'>İyileşenler</span>
             </div>
           </div>
 
           <div className='col-sm-12 col-md-6 col-xl-4'>
             <div className='card-counter danger'>
-              <span className='count-numbers'>{datas.deaths}</span>
+              <span className='count-numbers'>
+                {!loading ? datas.deaths : <Ellipsis color='white' />}
+              </span>
               <i className='fas fa-heart-broken'></i>
               <span className='count-name'>Ölüm</span>
             </div>
@@ -261,16 +280,15 @@ function App() {
       <div
         className='container box-shadow border border-light rounded p-3 mb-5'
         id='chart'
-        style={{
-          height: "500px"
-        }}
+        style={{}}
       >
         <Chart
           chartType='LineChart'
           data={chartData}
           options={options}
           width='100%'
-          height='100%'
+          height='500px'
+          loader={<Default />}
         />
       </div>
       <div className='container'>
@@ -286,6 +304,7 @@ function App() {
           options={{
             width: "100%"
           }}
+          loader={<Default />}
         />
       </div>
       <div id='scroll'>
