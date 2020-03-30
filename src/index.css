@@ -3,6 +3,13 @@
   text-align: center;
 }
 
+.App i {
+  font-size: 2rem;
+}
+
+.App a {
+  color: #24292e;
+}
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
@@ -75,6 +82,15 @@ code {
 
 .card-counter.percent {
   background-color: purple;
+  color: #fff;
+}
+.card-counter.yogun {
+  background-color: crimson;
+  color: #fff;
+}
+
+.card-counter.bugun {
+  background-color: #00a5a1;
   color: #fff;
 }
 
@@ -246,7 +262,7 @@ code {
 
   #oranSpan {
     position: absolute;
-    left: 95px;
+    left: 210px;
     top: 65px;
     line-height: 1;
     font-style: italic;
@@ -313,7 +329,7 @@ code {
 
   #oranSpan {
     position: absolute;
-    right: -30px;
+    right: -80px;
     top: 66px;
     line-height: 1;
     font-style: italic;
@@ -382,7 +398,7 @@ code {
 
   #oranSpan {
     position: absolute;
-    right: -80px;
+    right: 30px;
     top: 65px;
     line-height: 1;
     font-style: italic;
@@ -420,6 +436,10 @@ code {
   }
 }
 
+.google-visualization-table-td {
+  text-align: center !important;
+}
+
 #scroll {
   position: fixed;
   right: 10px;
@@ -427,7 +447,7 @@ code {
   cursor: pointer;
   width: 50px;
   height: 50px;
-  background-color: #3498dbb4;
+  background-color: #00a5a1;
   text-indent: -9999px;
   display: none;
   -webkit-border-radius: 60px;
