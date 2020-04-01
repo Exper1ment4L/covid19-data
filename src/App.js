@@ -40,8 +40,8 @@ function App() {
   ];
 
   const chartData = [["Tarih", "Toplam Vaka"]];
-  const chart2Data = [["Tarih", "Bir Önceki Güne Göre Vaka Artışı"]];
-  const chart3Data = [["Tarih", "Bir Önceki Güne Göre Ölüm Artışı"]];
+  const chart2Data = [["Tarih", "Günlük Vaka"]];
+  const chart3Data = [["Tarih", "Günlük Ölüm"]];
 
   const setTarihFormat = tarih => {
     let formatted;
@@ -109,8 +109,9 @@ function App() {
     const iyilesen = Object.values(history.recovered)
       .map(item => item)
       .reverse();
+    const startIndex = tarih.indexOf("10 Mart 2020");
 
-    for (let index = 0; index < 19; index++) {
+    for (let index = 0; index < startIndex; index++) {
       let vakaArtis = toplam[index] - toplam[index + 1];
       let olumArtis = olum[index] - olum[index + 1];
       let iyiArtis = iyilesen[index] - iyilesen[index + 1];
@@ -136,14 +137,17 @@ function App() {
         { v: yuzde, f: "%" + yuzde }
       ]);
 
-      chartData.push([tarih[18 - index].substr(0, 6), toplam[18 - index]]);
+      chartData.push([
+        tarih[startIndex - index - 1].substr(0, 6),
+        toplam[startIndex - index - 1]
+      ]);
       chart2Data.push([
-        tarih[18 - index].substr(0, 6),
-        toplam[18 - index] - toplam[19 - index]
+        tarih[startIndex - index - 1].substr(0, 6),
+        toplam[startIndex - 1 - index] - toplam[startIndex - index]
       ]);
       chart3Data.push([
-        tarih[18 - index].substr(0, 6),
-        olum[18 - index] - olum[19 - index]
+        tarih[startIndex - index - 1].substr(0, 6),
+        olum[startIndex - 1 - index] - olum[startIndex - index]
       ]);
     }
   }
@@ -159,7 +163,7 @@ function App() {
   yuzde = yuzde.replace(".", ",");
 
   const options = {
-    legend: "top",
+    legend: "none",
     chartArea: {
       left: 100,
       top: 50,
@@ -194,7 +198,7 @@ function App() {
           </div>
         </div>
       </div>
-      <div className='container border border-light rounded pt-3 mb-3 mt-3 box-shadow'>
+      <div className='container border border-light rounded pt-3 mb-3 mt-3 '>
         <div className='row mb-3'>
           <div className='col-sm-12 col-md-6 col-xl-6'>
             <div className='card-counter bugun'>
@@ -296,8 +300,8 @@ function App() {
         </div>
       </div>
       <div className='container'>
-        <div className='row justify-content-center display-4 mt-2 box-shadow'>
-          <div className='col-md-12 mt-3 mb-5'>Toplam Vaka Artışı</div>
+        <div className='row justify-content-center display-4 mt-2 '>
+          <div className='col-md-12 mt-3 mb-5'>Toplam Vaka</div>
 
           <div className='col justify-content-center mt-2'>
             <Chart
@@ -310,7 +314,7 @@ function App() {
             />
           </div>
         </div>
-        <div className='row justify-content-center display-4 mt-3 box-shadow'>
+        <div className='row justify-content-center display-4 mt-3 '>
           <div className='col-md-12 mt-3 mb-5'>Günlük Vaka</div>
 
           <div className='col-md-12 justify-content-center mt-2'>
@@ -324,7 +328,7 @@ function App() {
             />
           </div>
         </div>
-        <div className='row justify-content-center display-4 mb-3 mt-3 box-shadow'>
+        <div className='row justify-content-center display-4 mb-3 mt-3 '>
           <div className='col-md-12 mt-3 mb-5'>Günlük Ölüm</div>
 
           <div className='col justify-content-center mt-2'>
@@ -338,7 +342,7 @@ function App() {
             />
           </div>
         </div>
-        <div className='row justify-content-center display-4 mt-2 mb-5 box-shadow'>
+        <div className='row justify-content-center display-4 mt-2 mb-5 '>
           <div className='col-md-12 mt-3 mb-5'>Günlük Veri Tablosu</div>
 
           <div className='col justify-content-center pb-5 mt-1'>
@@ -366,8 +370,8 @@ function App() {
         rel='noopener noreferrer'
       >
         <svg
-          width='80'
-          height='80'
+          width='60'
+          height='60'
           viewBox='0 0 250 250'
           style={{
             fill: "#151513",
