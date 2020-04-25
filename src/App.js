@@ -9,9 +9,9 @@ function App() {
 
   // Güncel Veriler
   useEffect(() => {
-    fetch("https://corona.lmao.ninja/countries/turkey")
-      .then(res => res.json())
-      .then(data => {
+    fetch("https://corona.lmao.ninja/v2/countries/turkey")
+      .then((res) => res.json())
+      .then((data) => {
         setDatas(data);
         setLoading(false);
       });
@@ -20,7 +20,7 @@ function App() {
   // Geçmiş Veriler
   useEffect(() => {
     fetch("https://corona.lmao.ninja/v2/historical/turkey")
-      .then(res => res.json())
+      .then((res) => res.json())
       .then((data, index) => {
         setHistory(data.timeline);
       });
@@ -35,17 +35,18 @@ function App() {
       "Bugünkü Ölüm",
       "Toplam İyileşen",
       "Bugünkü İyileşen",
-      "Ölüm Oranı"
-    ]
+      "Ölüm Oranı",
+    ],
   ];
 
   const chartData = [["Tarih", "Toplam Vaka"]];
   const chart2Data = [["Tarih", "Günlük Vaka"]];
   const chart3Data = [["Tarih", "Günlük Ölüm"]];
 
-  const setTarihFormat = tarih => {
-    let formatted;
+  const setTarihFormat = (tarih) => {
+    let date;
     let month;
+    let shortDate;
     switch (tarih.substr(0, 1)) {
       case "1":
         month = "Ocak";
@@ -89,27 +90,33 @@ function App() {
     }
 
     if (tarih.length === 7) {
-      formatted = tarih.substr(2, 2) + " " + month + " 2020";
+      date = tarih.substr(2, 2) + " " + month + " 2020";
+      shortDate = tarih.substr(2, 2) + " " + month.substr(0, 3);
     } else {
-      formatted = tarih.substr(2, 1) + " " + month + " 2020";
+      date = tarih.substr(2, 1) + " " + month + " 2020";
+      shortDate = tarih.substr(2, 1) + " " + month.substr(0, 3);
     }
+    let formatted = { date: date, shortDate: shortDate };
     return formatted;
   };
 
   if (history !== undefined) {
     const tarih = Object.keys(history.cases)
-      .map(item => setTarihFormat(item))
+      .map((item) => setTarihFormat(item).date)
+      .reverse();
+    const tarih2 = Object.keys(history.cases)
+      .map((item) => setTarihFormat(item).shortDate)
       .reverse();
     const toplam = Object.values(history.cases)
-      .map(item => item)
+      .map((item) => item)
       .reverse();
     const olum = Object.values(history.deaths)
-      .map(item => item)
+      .map((item) => item)
       .reverse();
     const iyilesen = Object.values(history.recovered)
-      .map(item => item)
+      .map((item) => item)
       .reverse();
-    const startIndex = tarih.indexOf("10 Mart 2020");
+    const startIndex = tarih.length;
 
     for (let index = 0; index < startIndex; index++) {
       let vakaArtis = toplam[index] - toplam[index + 1];
@@ -134,20 +141,20 @@ function App() {
         !isNaN(iyiArtis) && iyiArtis !== 0
           ? { v: iyiArtis, f: "+" + iyiArtis }
           : 0,
-        { v: yuzde, f: "%" + yuzde }
+        { v: yuzde, f: "%" + yuzde },
       ]);
 
       chartData.push([
-        tarih[startIndex - index - 1].substr(0, 6),
-        toplam[startIndex - index - 1]
+        tarih2[startIndex - index - 1],
+        toplam[startIndex - index - 1],
       ]);
       chart2Data.push([
-        tarih[startIndex - index - 1].substr(0, 6),
-        toplam[startIndex - 1 - index] - toplam[startIndex - index]
+        tarih2[startIndex - index - 1],
+        toplam[startIndex - 1 - index] - toplam[startIndex - index],
       ]);
       chart3Data.push([
-        tarih[startIndex - index - 1].substr(0, 6),
-        olum[startIndex - 1 - index] - olum[startIndex - index]
+        tarih2[startIndex - index - 1],
+        olum[startIndex - 1 - index] - olum[startIndex - index],
       ]);
     }
   }
@@ -170,7 +177,7 @@ function App() {
       bottom: 100,
       right: 30,
       width: "100%",
-      height: "100%"
+      height: "100%",
     },
     smoothLine: true,
     lineSize: 4,
@@ -178,12 +185,12 @@ function App() {
     vAxis: {
       viewWindowMode: "explicit",
       viewWindow: {
-        min: 0
+        min: 0,
       },
       gridlines: {
-        count: 5
-      }
-    }
+        count: 5,
+      },
+    },
   };
 
   return (
@@ -351,7 +358,7 @@ function App() {
               data={tableData}
               options={{
                 width: "100%",
-                height: "500px"
+                height: "500px",
               }}
               loader={<Default />}
             />
@@ -379,7 +386,7 @@ function App() {
             position: "absolute",
             top: 0,
             border: 0,
-            right: 0
+            right: 0,
           }}
           aria-hidden='true'
         >
