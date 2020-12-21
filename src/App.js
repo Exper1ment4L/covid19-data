@@ -43,69 +43,12 @@ function App() {
   const chart2Data = [["Tarih", "Günlük Vaka"]];
   const chart3Data = [["Tarih", "Günlük Ölüm"]];
 
-  const setTarihFormat = (tarih) => {
-    let date;
-    let month;
-    let shortDate;
-    switch (tarih.substr(0, 1)) {
-      case "1":
-        month = "Ocak";
-        break;
-      case "2":
-        month = "Şubat";
-        break;
-      case "3":
-        month = "Mart";
-        break;
-      case "4":
-        month = "Nisan";
-        break;
-      case "5":
-        month = "Mayıs";
-        break;
-      case "6":
-        month = "Haziran";
-        break;
-      case "7":
-        month = "Temmuz";
-        break;
-      case "8":
-        month = "Ağustos";
-        break;
-      case "9":
-        month = "Eylül";
-        break;
-      case "10":
-        month = "Ekim";
-        break;
-      case "11":
-        month = "Kasım";
-        break;
-      case "12":
-        month = "Aralık";
-        break;
-
-      default:
-        break;
-    }
-
-    if (tarih.length === 7) {
-      date = tarih.substr(2, 2) + " " + month + " 2020";
-      shortDate = tarih.substr(2, 2) + " " + month.substr(0, 3);
-    } else {
-      date = tarih.substr(2, 1) + " " + month + " 2020";
-      shortDate = tarih.substr(2, 1) + " " + month.substr(0, 3);
-    }
-    let formatted = { date: date, shortDate: shortDate };
-    return formatted;
-  };
-
   if (history !== undefined) {
     const tarih = Object.keys(history.cases)
-      .map((item) => setTarihFormat(item).date)
+      .map((item) => new Date(item).toLocaleDateString('default', { year: 'numeric', month: 'long', day: 'numeric' }))
       .reverse();
     const tarih2 = Object.keys(history.cases)
-      .map((item) => setTarihFormat(item).shortDate)
+      .map((item) => new Date(item).toLocaleDateString('default', { year: 'numeric', month: 'long', day: 'numeric' }))
       .reverse();
     const toplam = Object.values(history.cases)
       .map((item) => item)
@@ -119,13 +62,12 @@ function App() {
     const startIndex = tarih.length;
 
     for (let index = 0; index < startIndex; index++) {
-      let vakaArtis = toplam[index] - toplam[index + 1];
-      let olumArtis = olum[index] - olum[index + 1];
-      let iyiArtis = iyilesen[index] - iyilesen[index + 1];
+      let vakaArtis = Number(toplam[index] - toplam[index + 1]).toLocaleString();
+      let olumArtis = Number(olum[index] - olum[index + 1]).toLocaleString();
+      let iyiArtis = Number(iyilesen[index] - iyilesen[index + 1]).toLocaleString();
 
       let oran = parseFloat((olum[index] * 100) / toplam[index]);
       let yuzde = oran.toString().substr(0, 4);
-      yuzde = yuzde.replace(".", ",");
 
       tableData.push([
         { v: index, f: tarih[index] },
@@ -159,8 +101,8 @@ function App() {
     }
   }
 
-  const yogunBakim = datas.critical;
-  const hasta = datas.active;
+  const yogunBakim = Number(datas.critical).toLocaleString();
+  const hasta = Number(datas.active).toLocaleString();
 
   let updated = new Date(datas.updated);
   let lastUpdate = updated.toLocaleString();
@@ -207,14 +149,28 @@ function App() {
       </div>
       <div className='container border border-light rounded pt-3 mb-3 mt-3 '>
         <div className='row mb-3'>
-          <div className='col-sm-12 col-md-6 col-xl-6'>
+          
+        <div className='col-sm-12 col-md-4 col-xl-4'>
+            <div className='card-counter bugun'>
+              <span className='count-numbers'>
+                {!loading ? (
+                  Number(datas.tests).toLocaleString()
+                ) : (
+                  <Ellipsis color='white' />
+                )}
+              </span>
+              <i className='fas fa-vial'></i>
+              <span className='count-name'>Toplam Test</span>
+            </div>
+          </div>
+          <div className='col-sm-12 col-md-4 col-xl-4'>
             <div className='card-counter bugun'>
               <span className='count-numbers'>
                 {!loading ? (
                   datas.todayCases === 0 ? (
                     "Açıklanmadı"
                   ) : (
-                    datas.todayCases
+                    Number(datas.todayCases).toLocaleString()
                   )
                 ) : (
                   <Ellipsis color='white' />
@@ -224,14 +180,14 @@ function App() {
               <span className='count-name'>Bugünkü Vaka</span>
             </div>
           </div>
-          <div className='col-sm-12 col-md-6 col-xl-6'>
+          <div className='col-sm-12 col-md-4 col-xl-4'>
             <div className='card-counter bugun'>
               <span className='count-numbers'>
                 {!loading ? (
                   datas.todayDeaths === 0 ? (
                     "Açıklanmadı"
                   ) : (
-                    datas.todayDeaths
+                    Number(datas.todayDeaths).toLocaleString()
                   )
                 ) : (
                   <Ellipsis color='white' />
@@ -248,7 +204,7 @@ function App() {
           <div className='col-sm-12 col-md-6 col-xl-4'>
             <div className='card-counter info'>
               <span className='count-numbers'>
-                {!loading ? datas.cases : <Ellipsis color='white' />}
+                {!loading ? Number(datas.cases).toLocaleString() : <Ellipsis color='white' />}
               </span>
               <i className='fas fa-user'></i>
               <span className='count-name'>Toplam Vaka</span>
@@ -257,7 +213,7 @@ function App() {
           <div className='col-sm-12 col-md-6 col-xl-4'>
             <div className='card-counter primary' id='hasta'>
               <span className='count-numbers'>
-                {!loading ? hasta : <Ellipsis color='white' />}
+                {!loading ? hasta.toLocaleString() : <Ellipsis color='white' />}
               </span>
               <i className='fa fa-procedures'></i>
               <span className='count-name'>Şuanki Hasta</span>
@@ -279,7 +235,7 @@ function App() {
           <div className='col-sm-12 col-md-6 col-xl-4 '>
             <div className='card-counter yogun'>
               <span className='count-numbers'>
-                {!loading ? yogunBakim : <Ellipsis color='white' />}
+                {!loading ? yogunBakim.toLocaleString() : <Ellipsis color='white' />}
               </span>
               <i className='fas fa-heartbeat'></i>
               <span className='count-name'>Yoğun Bakım</span>
@@ -289,7 +245,7 @@ function App() {
             <div className='card-counter success'>
               <i className='fa fa-medkit'></i>
               <span className='count-numbers'>
-                {!loading ? datas.recovered : <Ellipsis color='white' />}
+                {!loading ? Number(datas.recovered).toLocaleString() : <Ellipsis color='white' />}
               </span>
               <span className='count-name'>İyileşenler</span>
             </div>
@@ -298,7 +254,7 @@ function App() {
           <div className='col-sm-12 col-md-6 col-xl-4'>
             <div className='card-counter danger'>
               <span className='count-numbers'>
-                {!loading ? datas.deaths : <Ellipsis color='white' />}
+                {!loading ? Number(datas.deaths).toLocaleString() : <Ellipsis color='white' />}
               </span>
               <i className='fas fa-heart-broken'></i>
               <span className='count-name'>Ölüm</span>
@@ -308,7 +264,7 @@ function App() {
       </div>
       <div className='container'>
         <div className='row justify-content-center display-4 mt-2 '>
-          <div className='col-md-12 mt-3 mb-5'>Toplam Vaka</div>
+          <div className='col-md-12 mt-3 mb-5'>Son 30 Günlük Vaka</div>
 
           <div className='col justify-content-center mt-2'>
             <Chart
