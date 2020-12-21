@@ -1,73 +1,57 @@
 <!DOCTYPE html>
 <html lang="tr">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
-    <meta name="description" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@TRCOVID19Veri" />
-    <meta name="twitter:creator" content="@TRCOVID19Veri" />
-    <meta property="og:url" content="http://coronavirusturkiye.now.sh" />
-    <meta property="og:title" content="Türkiye Güncel COVID-19 Verileri" />
-    <meta
-      property="og:description"
-      content="Türkiye'deki koronavirüs(COVID-19) verileri"
-    />
-    <meta
-      property="og:image"
-      content="https://i.ibb.co/qgGFm3b/5e78e2c655427e13c4047ca9.jpg"
-    />
 
-    <title>COVID-19 Türkiye Verileri</title>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#000000" />
+  <meta name="description" content="COVID-19 Türkiye Günlük Verileri" />
+  <meta property="og:url" content="http://coronavirusturkiye.now.sh" />
+  <meta property="og:title" content="Türkiye Güncel COVID-19 Verileri" />
+  <meta property="og:description" content="Türkiye'deki koronavirüs(COVID-19) verileri" />
+  <meta  property="og:image" content="https://i.ibb.co/qgGFm3b/5e78e2c655427e13c4047ca9.jpg" />
 
-    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+  <title>COVID-19 Türkiye Verileri</title>
 
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <link
-      href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
-      rel="stylesheet"
-      id="bootstrap-css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css"
-    />
-    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+  <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+  <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+  <link rel="canonical" href="https://coronavirusturkiye.now.sh/">
+  <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+  <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" />
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
 
-    <script>
-      $(document).ready(function() {
-        $(window).scroll(function() {
-          if ($(this).scrollTop() > 100) {
-            $("#scroll").fadeIn();
-          } else {
-            $("#scroll").fadeOut();
-          }
-        });
-        $("#scroll").click(function() {
-          $("html, body").animate({ scrollTop: 0 }, 1000);
-          return false;
-        });
+  <script>
+    $(document).ready(function () {
+      $(window).scroll(function () {
+        if ($(this).scrollTop() > 100) {
+          $("#scroll").fadeIn();
+        } else {
+          $("#scroll").fadeOut();
+        }
       });
-    </script>
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script
-      async
-      src="https://www.googletagmanager.com/gtag/js?id=UA-77692519-3"
-    ></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag() {
-        dataLayer.push(arguments);
-      }
-      gtag("js", new Date());
-      gtag("config", "UA-77692519-3");
-    </script>
-  </head>
-  <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
-  </body>
+      $("#scroll").click(function () {
+        $("html, body").animate({ scrollTop: 0 }, 1000);
+        return false;
+      });
+    });
+  </script>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-77692519-3"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+    gtag("js", new Date());
+    gtag("config", "UA-77692519-3");
+  </script>
+</head>
+
+<body>
+  <noscript>You need to enable JavaScript to run this app.</noscript>
+  <div id="root"></div>
+</body>
+
 </html>
